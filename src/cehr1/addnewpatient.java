@@ -4,9 +4,10 @@
  */
 package cehr1;
 
-import java.sql.Connection;
-import java.sql.Statement;
+import java.io.File;
+import java.sql.*;
 import java.text.SimpleDateFormat;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import project.ConnectionProvider;
 
@@ -15,12 +16,32 @@ import project.ConnectionProvider;
  * @author Lenovo
  */
 public class addnewpatient extends javax.swing.JFrame {
+    File f;
+    static int count;
 
     /**
      * Creates new form addnewpatient
      */
     public addnewpatient() {
         initComponents();
+        jLabel15.setVisible(false);
+        try{
+        Connection con=ConnectionProvider.getcon();
+        Statement st=con.createStatement( ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+        ResultSet rs=st.executeQuery("select patientID from patient");
+        if(!rs.last()){
+        }
+        else{
+         count=Integer.parseInt(rs.getString("patientID"));
+         count++;
+        }
+        
+        }
+        catch(Exception e){
+      
+        }
+        jTextField1.setText(Integer.toString(count));
+        
     }
 
     /**
@@ -60,7 +81,10 @@ public class addnewpatient extends javax.swing.JFrame {
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jLabel16 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
         jLabel15 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocation(new java.awt.Point(280, 150));
@@ -127,7 +151,7 @@ public class addnewpatient extends javax.swing.JFrame {
                 jComboBox1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(138, 342, 150, -1));
+        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(138, 343, 150, -1));
         getContentPane().add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 86, 80, -1));
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female", "Others" }));
@@ -148,7 +172,7 @@ public class addnewpatient extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 420, -1, -1));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 414, -1, -1));
 
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cehr1/save-icon--1.png"))); // NOI18N
@@ -158,10 +182,27 @@ public class addnewpatient extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 420, -1, -1));
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(625, 414, -1, -1));
 
-        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cehr1/add new patient background.jpg"))); // NOI18N
-        getContentPane().add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        jLabel16.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel16.setText("Save Report:");
+        getContentPane().add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(28, 408, -1, -1));
+
+        jButton3.setText("Select File");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(138, 408, 94, -1));
+
+        jLabel15.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(255, 51, 51));
+        jLabel15.setText("*Please provide correct details!");
+        getContentPane().add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(357, 342, -1, -1));
+
+        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cehr1/add new patient background.jpg"))); // NOI18N
+        getContentPane().add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 770, 470));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -191,19 +232,56 @@ public class addnewpatient extends javax.swing.JFrame {
         String date=sdf.format(jDateChooser1.getDate());
         String address= jTextField6.getText();
         String status=(String)jComboBox1.getSelectedItem();
+        StringBuilder sb=new StringBuilder(email);
+        sb=sb.reverse();
+        String reverseString=sb.toString();
+        String s=reverseString.substring(0,10);
+        String s1=reverseString.substring(0,12);
+        //!phoneNumber.matches("[0-9]{10}")||!age.matches("[0-9]{1,3}")||!weight.matches("[0-9]{1,3}")||!height.matches("[0-9]{1,3}")||!(s.equals("moc.liamg@")||s1.equals("moc.kooltuo@"))
+        if(!phoneNumber.matches("[0-9]{10}")){
+            jLabel15.setText("Please provide correct phonennumbe!!");
+            jLabel15.setVisible(true);
+        }
+        else if(!age.matches("[0-9]{1,3}")){
+         jLabel15.setText("Please provide correct age!!");
+            jLabel15.setVisible(true);
+        }
+        else if(!weight.matches("[0-9]{1,3}")){
+         jLabel15.setText("Please provide correct weight!!");
+            jLabel15.setVisible(true);
+        }
+        else if(!height.matches("[0-9]{1,3}")){
+         jLabel15.setText("Please provide correct height!!");
+            jLabel15.setVisible(true);
+        }
+         else if(!(s.equals("moc.liamg@")||s1.equals("moc.kooltuo@"))){
+         jLabel15.setText("Please provide correct mail!!");
+            jLabel15.setVisible(true);
+        }
         
-        
+        else{
         try {
             Connection con=ConnectionProvider.getcon();
             Statement st=con.createStatement();
-            st.executeUpdate("insert into patient values('"+patientID+"','"+name+"','"+phoneNumber+"','"+email+"','"+age+"','"+sex+"','"+bloodGroup+"','"+height+"','"+weight+"','"+date+"','"+address+"','"+status+"')");
+            st.executeUpdate("insert into patient values('"+patientID+"','"+name+"','"+phoneNumber+"','"+email+"','"+age+"','"+sex+"','"+bloodGroup+"','"+height+"','"+weight+"','"+date+"','"+address+"','"+status+"','"+f.toURI()+"')");
             JOptionPane.showMessageDialog(null, "Successfully Updated");
+            count++;
              setVisible(false);
              new addnewpatient().setVisible(true);
          } catch (Exception e) {
              JOptionPane.showMessageDialog(null,e);
         }
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+         JFileChooser fc=new JFileChooser();
+        fc.showOpenDialog(this);
+        f=fc.getSelectedFile();
+        jButton3.setText(f.getName());
+        
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -243,6 +321,7 @@ public class addnewpatient extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
@@ -254,6 +333,8 @@ public class addnewpatient extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

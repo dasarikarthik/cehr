@@ -4,7 +4,11 @@
  */
 package cehr1;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import project.ConnectionProvider;
 
 /**
  *
@@ -83,13 +87,27 @@ public class authorityLogin extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        if(jTextField1.getText().equals("cehr")&&jPasswordField1.getText().equals("1234")){
-        
-            setVisible(false);
-            new authorityHome().setVisible(true);
+       String username=jTextField1.getText();
+        String password=jPasswordField1.getText();
+        try{
+        Connection con=ConnectionProvider.getcon();
+        PreparedStatement st=con.prepareStatement("select * from authoritylogin where uname=? && password=?",ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+        st.setString(1, username);
+        st.setString(2, password);
+        ResultSet rs=st.executeQuery();
+       
+        if(!rs.first()){
+         JOptionPane.showMessageDialog(null, "Incorrect Username or Password");
         }
         else{
-        JOptionPane.showMessageDialog(null, "Incorrect Username or Password");
+        this.setVisible(false);
+        new authorityHome().setVisible(true);
+        }
+        
+        
+        }
+        catch(Exception e){
+           JOptionPane.showMessageDialog(null, e);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
